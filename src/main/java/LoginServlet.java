@@ -5,36 +5,34 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+    private static final Map<String, String> userDatabase = new HashMap<>(); // Симуляция базы данных
+
+    static {
+        userDatabase.put("user1", "password1");
+        userDatabase.put("user2", "password2");
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        // Ваша логика проверки логина и пароля (например, сравнение с данными в базе данных)
-        boolean isAuthenticated = authenticate(username, password);
-
-        if (isAuthenticated) {
-            // Устанавливаем атрибут сессии, указывающий, что пользователь вошел в систему
+        if (authenticate(username, password)) {
             HttpSession session = request.getSession();
             session.setAttribute("username", username);
 
-            // Перенаправление на главную страницу с учетом логина пользователя
-            String homeDirectory = "c:/Users/Student/filemanager/" + username; // Путь к домашней папке пользователя
-            response.sendRedirect("main-servlet?path=" + URLEncoder.encode(homeDirectory, StandardCharsets.UTF_8.toString()));
+            response.sendRedirect("main-servlet");
         } else {
-            // Если аутентификация не удалась, вы можете перенаправить обратно на страницу входа с сообщением об ошибке
             response.sendRedirect("login.jsp?error=1");
         }
     }
 
-    // Пример простой аутентификации
     private boolean authenticate(String username, String password) {
-        // Здесь вы можете добавить код для проверки логина и пароля в базе данных или другом хранилище данных
-        // В этом примере аутентификация всегда успешна для простоты
-        return true;
+        String storedPassword = userDatabase.get(username);
+        return storedPassword != null && storedPassword.equals(password);
     }
 }

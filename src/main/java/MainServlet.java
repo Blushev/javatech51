@@ -35,7 +35,6 @@ public class MainServlet extends HttpServlet {
         // Проверка, залогинен ли пользователь
         String username = (String) session.getAttribute("username");
         if (username == null) {
-            // Если пользователь не залогинен, перенаправить на страницу входа
             resp.sendRedirect("login.jsp");
             return;
         }
@@ -71,7 +70,6 @@ public class MainServlet extends HttpServlet {
         getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
     }
 
-    // Метод для проверки доступа пользователя к директории
     private boolean hasAccessToDirectory(String username, String directoryPath) {
         // Ваша логика проверки доступа, например, сравнение директории с "домашней папкой" пользователя
         String userHomeDirectory = "c:/Users/Student/filemanager/" + username; // Здесь укажите путь к домашней папке пользователя
